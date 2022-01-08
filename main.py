@@ -32,6 +32,7 @@ class Game:
                 elif row_index <= 2: alien_sprite = Alien('green',x,y)
                 else: alien_sprite = Alien('red',x,y)
                 self.aliens.add(alien_sprite)
+                
     def run(self):
         self.background.draw(screen)
         self.player.update()
