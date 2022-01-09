@@ -25,7 +25,7 @@ class Game:
         self.alien_direction = 1
         self.alien_lasers = pygame.sprite.Group()
 
-    def alien_setup(self,rows,cols,x_distance = 60,y_distance = 50,x_offset = 150, y_offset = 100):
+    def alien_setup(self,rows,cols,x_distance = 70,y_distance = 60,x_offset = 80, y_offset = 50):
         for row_index, row in enumerate(range(rows)):
             for col_index, col in enumerate(range(cols)):
                 x = col_index * x_distance + x_offset
@@ -57,6 +57,22 @@ class Game:
             laser_sprite = Laser(random_alien.rect.center,-5,screen_height)
             self.alien_lasers.add(laser_sprite)
 
+    def collision_checks(self):
+        if self.player.sprite.lasers:
+            for laser in self.player.sprite.lasers:
+                if pygame.sprite.spritecollide(laser,self.aliens,True):
+                    laser.kill()
+        if self.alien_lasers:
+            for laser in self.alien_lasers:
+                if pygame.sprite.spritecollide(laser,self.player,False):
+                    laser.kill()
+                    print('dead')
+        if self.aliens:
+            for alien in self.aliens:
+                if pygame.sprite.spritecollide(alien,self.player,False):
+                    pygame.quit()
+                    sys.exit()
+
     def run(self):
         self.background.draw(screen)
         
@@ -64,6 +80,8 @@ class Game:
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
         
+        self.collision_checks()
+
         self.alien_pos_checker()
         self.aliens.update(self.alien_direction)
         self.alien_lasers.update()
