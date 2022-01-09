@@ -54,18 +54,20 @@ class Game:
     def alien_shoot(self):
         if self.aliens.sprites():
             random_alien = choice(self.aliens.sprites())
-            laser_sprite = Laser(random_alien.rect.center,6,screen_height)
+            laser_sprite = Laser(random_alien.rect.center,-5,screen_height)
             self.alien_lasers.add(laser_sprite)
 
     def run(self):
         self.background.draw(screen)
         
-        self.alien_pos_checker()
-        self.aliens.update(self.alien_direction)
         self.player.update()
-        
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
+        
+        self.alien_pos_checker()
+        self.aliens.update(self.alien_direction)
+        self.alien_lasers.update()
+        self.alien_lasers.draw(screen)
         self.aliens.draw(screen)
 
 if __name__ == '__main__':
@@ -78,11 +80,16 @@ if __name__ == '__main__':
     FPS = 60
     game = Game()
 
+    ALIENLASER = pygame.USEREVENT + 1
+    pygame.time.set_timer(ALIENLASER,1200)
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == ALIENLASER :
+                game.alien_shoot()
 
         screen.fill ((30,30,30))
         game.run()
