@@ -5,3 +5,6 @@ class Alien(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('assets/' + colour + '.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = (x,y))
+    
+    def update(self,direction):
+        self.rect.x += direction

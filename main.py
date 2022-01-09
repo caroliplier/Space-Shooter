@@ -1,10 +1,11 @@
-from os import X_OK
 import pygame
 import sys
 
 from player import Player
 from background import Background
 from alien import Alien
+from random import choice
+from laser import Laser
 
 pygame.display.set_caption('Space Adventure!')
 
@@ -21,6 +22,8 @@ class Game:
         #alien setup
         self.aliens = pygame.sprite.Group()
         self.alien_setup(rows = 6, cols = 8)
+        self.alien_direction = 1
+        self.alien_lasers = pygame.sprite.Group()
 
     def alien_setup(self,rows,cols,x_distance = 60,y_distance = 50,x_offset = 150, y_offset = 100):
         for row_index, row in enumerate(range(rows)):
@@ -32,10 +35,35 @@ class Game:
                 elif row_index <= 2: alien_sprite = Alien('green',x,y)
                 else: alien_sprite = Alien('red',x,y)
                 self.aliens.add(alien_sprite)
-                
+    
+    def alien_move_down(self,distance):
+        if self.aliens:
+            for alien in self.aliens.sprites():
+                alien.rect.y += distance
+
+    def alien_pos_checker(self):
+        all_aliens = self.aliens.sprites()
+        for alien in all_aliens:
+            if alien.rect.right >= screen_width:
+                self.alien_direction = -1
+                self.alien_move_down(2)
+            elif alien.rect.left <= 0:
+                self.alien_direction = 1
+                self.alien_move_down(2)
+    
+    def alien_shoot(self):
+        if self.aliens.sprites():
+            random_alien = choice(self.aliens.sprites())
+            laser_sprite = Laser(random_alien.rect.center,6,screen_height)
+            self.alien_lasers.add(laser_sprite)
+
     def run(self):
         self.background.draw(screen)
+        
+        self.alien_pos_checker()
+        self.aliens.update(self.alien_direction)
         self.player.update()
+        
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
         self.aliens.draw(screen)
