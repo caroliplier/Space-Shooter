@@ -79,14 +79,20 @@ class Game:
                 if pygame.sprite.spritecollide(laser,self.player,False):
                     laser.kill()
                     self.lives -= 1
-                    if self.lives <= 0:
-                        pygame.quit()
-                        sys.exit()
+        
         if self.aliens:
             for alien in self.aliens:
                 if pygame.sprite.spritecollide(alien,self.player,False):
-                    pygame.quit()
-                    sys.exit()
+                    self.lives -= 2
+
+        #game over screen
+        if self.lives <= 0:
+            lose_surf = self.font.render('GAME OVER',False,'red')
+            lose_rect = lose_surf.get_rect(center = (screen_width/2, screen_height/2))
+            screen.blit(lose_surf,lose_rect)
+
+            for alien in self.aliens:
+                alien.kill()
 
     def display_lives(self):
         for live in range(self.lives - 1):
@@ -99,7 +105,7 @@ class Game:
         screen.blit(score_surf,score_rect)
     
     def victory(self):
-        if not self.aliens.sprites():
+        if not self.aliens.sprites() and self.score == 8000:
             victory_surf = self.font.render('You WON!',False,'gold')
             victory_rect = victory_surf.get_rect(center = (screen_width/2, screen_height/2))
             screen.blit(victory_surf,victory_rect)
@@ -144,8 +150,6 @@ if __name__ == '__main__':
                 sys.exit()
             if event.type == ALIENLASER :
                 game.alien_shoot()
-
-        screen.fill ((30,30,30))
         game.run()
         
         pygame.display.update()
