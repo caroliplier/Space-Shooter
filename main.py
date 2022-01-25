@@ -66,6 +66,7 @@ class Game:
             self.alien_lasers.add(laser_sprite)
 
     def collision_checks(self):
+        #player to alien
         if self.player.sprite.lasers:
             for laser in self.player.sprite.lasers:
                 aliens_hit = pygame.sprite.spritecollide(laser,self.aliens,True)
@@ -74,12 +75,14 @@ class Game:
                         self.score += alien.value
                     laser.kill()
 
+        #alien to player
         if self.alien_lasers:
             for laser in self.alien_lasers:
                 if pygame.sprite.spritecollide(laser,self.player,False):
                     laser.kill()
                     self.lives -= 1
         
+        #player hit alien
         if self.aliens:
             for alien in self.aliens:
                 if pygame.sprite.spritecollide(alien,self.player,False):
